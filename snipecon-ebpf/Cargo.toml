@@ -3,14 +3,13 @@ name = "snipecon-ebpf"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-aya-ebpf = "0.1.0"
-snipecon-common = { path = "../snipecon-common" }
+# This package compiles for bpfel-unknown-none (bare metal, no_std).
+# Do NOT add any dependencies that require std (tokio, mio, reqwest, socket2, etc.)
 
-[build-dependencies]
-aya-build = "0.1.0"
+[dependencies]
+aya-ebpf = { version = "0.1", default-features = false }
+aya-log-ebpf = { version = "0.1", default-features = false }
 
 [lib]
 name = "snipecon_ebpf"
-path = "src/main.rs"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
