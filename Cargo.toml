@@ -1,7 +1,12 @@
 [workspace]
-members = ["snipecon", "snipecon-ebpf", "snipecon-common"]
 resolver = "2"
+members = [
+    "snipecon",
+    "snipecon-ebpf",
+]
 
+# Workspace-level profile overrides
 [profile.release]
+opt-level = 3
 lto = true
-panic = 'abort'
+codegen-units = 1
