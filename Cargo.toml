@@ -1,0 +1,7 @@
+[workspace]
+members = ["snipecon", "snipecon-ebpf", "snipecon-common"]
+resolver = "2"
+
+[profile.release]
+lto = true
+panic = 'abort'
