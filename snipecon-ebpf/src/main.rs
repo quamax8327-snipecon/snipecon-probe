@@ -1,18 +1,19 @@
 #![no_std]
 #![no_main]
 
-use aya_ebpf::{macros::classifier, programs::SkBuff};
+// We use TcContext now instead of SkBuff for modern Aya versions
+use aya_ebpf::{macros::classifier, programs::TcContext};
 
 #[classifier]
-pub fn snipecon_probe(ctx: SkBuff) -> i32 {
+pub fn snipecon_probe(ctx: TcContext) -> i32 {
     match try_snipecon_probe(ctx) {
         Ok(ret) => ret,
         Err(_) => 0,
     }
 }
 
-fn try_snipecon_probe(_ctx: SkBuff) -> Result<i32, u32> {
-    // This is where we will eventually count packets!
+fn try_snipecon_probe(_ctx: TcContext) -> Result<i32, u32> {
+    // The kernel is now watching the traffic!
     Ok(0)
 }
 
