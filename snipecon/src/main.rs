@@ -27,13 +27,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ── Attach SchedClassifier (TC egress) ────────────────────────────────
     let program: &mut SchedClassifier = bpf
-        .program_mut("snipecon_egress")
-        .ok_or("BPF program 'snipecon_egress' not found")?
+        .program_mut("snipecon_probe")
+        .ok_or("BPF program 'snipecon_probe' not found")?
         .try_into()?;
 
     program.load()?;
     program.attach(&iface, aya::programs::tc::TcAttachType::Egress)?;
     println!("[SnipeCon] eBPF SchedClassifier attached on {} (egress)", iface);
+
 
     // ── Heartbeat loop ─────────────────────────────────────────────────────
     let client = Client::new();
