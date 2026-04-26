@@ -1,0 +1,11 @@
+[package]
+name = "snipecon-ebpf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aya-ebpf = "0.1.0"
+snipecon-common = { path = "../snipecon-common" }
+
+[build-dependencies]
+aya-tool = "0.1.0"
