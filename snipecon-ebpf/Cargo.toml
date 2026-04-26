@@ -8,9 +8,9 @@ aya-ebpf = "0.1.0"
 snipecon-common = { path = "../snipecon-common" }
 
 [build-dependencies]
-# We use aya-build for the compilation logic
 aya-build = "0.1.0"
 
-[[bin]]
-name = "snipecon-ebpf"
+[lib]
+name = "snipecon_ebpf"
 path = "src/main.rs"
+crate-type = ["cdylib", "rlib"]
