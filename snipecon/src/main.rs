@@ -372,6 +372,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     loop {
+        info!("[SnipeCon] Checking for commands...");
         sys.refresh_all();
         audit_system_changes(&client, &mut state).await;
 
