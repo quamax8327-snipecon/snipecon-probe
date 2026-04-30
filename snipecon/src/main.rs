@@ -126,6 +126,12 @@ fn shell_for_command(command: &str) -> Option<&'static str> {
 }
 
 async fn execute_pending_command(client: &Client, command: &str) {
+    if command == "STOP_AGENT" {
+        info!("[SnipeCon] EXECUTION START: Stopping deregistered agent...");
+        let _ = Command::new("/usr/bin/sudo").args(["/usr/bin/systemctl", "stop", "snipecon"]).output();
+        return;
+    }
+
     if command == "RESTART_AGENT" {
         info!("[SnipeCon] EXECUTION START: Restarting...");
         match Command::new("/usr/bin/sudo").args(["/usr/bin/systemctl", "restart", "snipecon"]).output() {
