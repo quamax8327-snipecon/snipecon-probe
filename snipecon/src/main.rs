@@ -96,7 +96,16 @@ fn build_event(event_type: &str, severity: u8, message: String, payload: serde_j
     })
 }
 
+fn should_ignore_log_line(message: &str, payload: &serde_json::Value) -> bool {
+    let text = format!("{} {}", message, payload);
+    text.contains("UFW BLOCK") || text.contains("SPT=1900")
+}
+
 async fn post_event(client: &Client, event_type: &str, severity: u8, message: String, payload: serde_json::Value) {
+    if should_ignore_log_line(&message, &payload) {
+        return;
+    }
+
     let body = build_event(event_type, severity, message, payload);
 
     if let Err(error) = client.post(INGEST_URL).json(&body).send().await {
@@ -372,7 +381,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     loop {
-        info!("[SnipeCon] Checking for commands...");
         sys.refresh_all();
         audit_system_changes(&client, &mut state).await;
 
