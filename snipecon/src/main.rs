@@ -174,7 +174,7 @@ async fn execute_pending_command(client: &Client, command: &str) {
 async fn handle_ingest_response(client: &Client, response: reqwest::Response) {
     match response.text().await {
         Ok(raw_body) => {
-            info!("[SnipeCon] heartbeat raw response: {}", if raw_body.is_empty() { "<empty>" } else { raw_body.as_str() });
+            println!("[Debug] HEARTBEAT RESPONSE: {}", if raw_body.is_empty() { "<empty>" } else { raw_body.as_str() });
             match serde_json::from_str::<serde_json::Value>(&raw_body) {
                 Ok(body) => {
                     if let Some(commands) = body["commands"].as_array() {
