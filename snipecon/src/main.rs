@@ -106,7 +106,6 @@ async fn post_event(client: &Client, event_type: &str, severity: u8, message: St
 
 fn shell_for_command(command: &str) -> Option<&'static str> {
     match command {
-        "restart_agent" => Some("sudo systemctl restart snipecon"),
         "sync_rules" => Some("sudo systemctl reload snipecon || sudo systemctl restart snipecon"),
         "refresh_metadata" => Some("systemctl status snipecon --no-pager >/dev/null"),
         "diagnostics" => Some("journalctl -u snipecon -n 80 --no-pager"),
@@ -118,6 +117,27 @@ fn shell_for_command(command: &str) -> Option<&'static str> {
 }
 
 async fn execute_pending_command(client: &Client, command: &str) {
+    if command == "RESTART_AGENT" {
+        info!("[SnipeCon] EXECUTION START: Restarting...");
+        match Command::new("/usr/bin/sudo").args(["/usr/bin/systemctl", "restart", "snipecon"]).output() {
+            Ok(output) => {
+                let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+                let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                post_event(
+                    client,
+                    "terminal_activity",
+                    if output.status.success() { 3 } else { 7 },
+                    "Dashboard command executed: RESTART_AGENT".to_string(),
+                    json!({ "command": command, "shell": "/usr/bin/sudo /usr/bin/systemctl restart snipecon", "success": output.status.success(), "stdout": stdout, "stderr": stderr }),
+                ).await;
+            }
+            Err(error) => {
+                warn!("[SnipeCon] failed to execute dashboard command {}: {}", command, error);
+            }
+        }
+        return;
+    }
+
     let Some(shell_command) = shell_for_command(command) else {
         warn!("[SnipeCon] unknown command from dashboard: {}", command);
         return;
